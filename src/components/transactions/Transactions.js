@@ -10,7 +10,7 @@ import { Dialog } from "primereact/dialog";
 import { Toolbar } from "primereact/toolbar";
 import LoadingScreen from "react-loading-screen";
 import userContext from "../../context/users/userContext";
-
+import { Badge } from 'primereact/badge';
 function Transactions() {
     const userData = useContext(userContext);
     const { enableUser, disableUser, addContract, getDisabledUsers, getusers, allUsers, dUsers,addUser } = userData;
@@ -38,14 +38,32 @@ function Transactions() {
         getusers();
         setloader(false);
         setLoading1(false);
-    }, []);
+    },[]);
 
     const formateDate = (rowData) => {
-        return Moment(new Date(rowData.date)).format("DD/MM/YYYY");
+        return Moment(new Date(rowData.user.date)).format("D/M/YYYY");
     };
 
+    const formateStartDate = (rowData) => {
+        return Moment(new Date(rowData.start)).format("D/M/YYYY");
+    };
+    
+    const formateEndDate = (rowData) => {
+        return Moment(new Date(rowData.end)).format("D/M/YYYY");
+    };
+
+    const formateDiffDate = (rowData)=>{
+        const start = Moment(new Date(rowData.start));
+        const end = Moment(new Date(rowData.end));
+        const diff = end.diff(start,"days");
+        return <Badge value={diff +" Days"} severity="success" className="mr-2"></Badge>
+    }
 
     const addcontract = (rowdata) => {
+
+    };
+
+    const setDisabled = (rowdata) => {
 
     };
 
@@ -56,7 +74,8 @@ function Transactions() {
     const actionBodyTemplate = (rowData) => {
         return (
             <React.Fragment>
-                <Button icon="pi pi-pencil" className="p-button-rounded p-button-success mx-1" onClick={() => addcontract(rowData)} />
+                <Button icon="pi pi-clock" className="p-button-rounded p-button-success mx-1" onClick={() => addcontract(rowData)} />
+                <Button icon="pi pi-trash" className="p-button-rounded p-button-danger mx-1" onClick={() => setDisabled(rowData)} />
             </React.Fragment>
         );
     };
@@ -105,7 +124,7 @@ function Transactions() {
                             className="p-datatable-customers"
                             showGridlines
                             rows={10}
-                            dataKey="_id"
+                            dataKey="user._id"
                             filters={filters1}
                             filterDisplay="menu"
                             loading={loading1}
@@ -113,13 +132,14 @@ function Transactions() {
                             emptyMessage="No Users"
                             size="small"
                         >
-                            <Column field="name" header="َName" filter filterPlaceholder="Name..." />
-                            <Column field="email" header="Email" body={formateDate} filter filterPlaceholder="Search..." />
-                            <Column field="date" header="Reg Date" />
-                            <Column field="company" header="Company" filter filterPlaceholder="Search..." />
-                            <Column field="contract.start" header="Contract Start" />
-                            <Column field="contract.end" header="Contract End" />
-                            <Column body={actionBodyTemplate} exportable={false}></Column>
+                            <Column field="user.name" header="َName" filter filterPlaceholder="Name..." />
+                            <Column field="user.email" header="Email" filter filterPlaceholder="Search..." />
+                            <Column field="user.date" header="Reg Date" body={formateDate}  />
+                            <Column field="user.company" header="Company" filter filterPlaceholder="Search..." />
+                            <Column field="start" header="Contract Start" body={formateStartDate}  />
+                            <Column field="end" header="Contract End" body={formateEndDate}  />
+                            <Column header="Remind Contract" body={formateDiffDate}  />
+                            <Column header="Actions" body={actionBodyTemplate} exportable={false}></Column>
                         </DataTable>
                     </div>
 
