@@ -10,13 +10,14 @@ import { Dialog } from "primereact/dialog";
 import { Toolbar } from "primereact/toolbar";
 import LoadingScreen from "react-loading-screen";
 import userContext from "../../context/users/userContext";
-import { Badge } from 'primereact/badge';
+import { Badge } from "primereact/badge";
 function Transactions() {
     const userData = useContext(userContext);
-    const { enableUser, disableUser, addContract, getDisabledUsers, getusers, allUsers, dUsers,addUser } = userData;
+    const { enableUser, disableUser, addContract, getDisabledUsers, getusers, allUsers, dUsers, addUser } = userData;
     const [filters1, setFilters1] = useState(null);
 
     const [loading1, setLoading1] = useState(true);
+    const [dataSending, setdataSending] = useState(false);
     const [transactionDialog, setTransactionDialog] = useState(false);
     const [user, setUser] = useState({
         _id: "",
@@ -25,7 +26,7 @@ function Transactions() {
         password: "",
         company: "",
         start: "",
-        end: ""
+        end: "",
     });
 
     const dt = useRef(null);
@@ -38,7 +39,7 @@ function Transactions() {
         getusers();
         setloader(false);
         setLoading1(false);
-    },[]);
+    }, []);
 
     const formateDate = (rowData) => {
         return Moment(new Date(rowData.user.date)).format("D/M/YYYY");
@@ -47,29 +48,25 @@ function Transactions() {
     const formateStartDate = (rowData) => {
         return Moment(new Date(rowData.start)).format("D/M/YYYY");
     };
-    
+
     const formateEndDate = (rowData) => {
         return Moment(new Date(rowData.end)).format("D/M/YYYY");
     };
 
-    const formateDiffDate = (rowData)=>{
+    const formateDiffDate = (rowData) => {
         const start = Moment(new Date(rowData.start));
         const end = Moment(new Date(rowData.end));
-        const diff = end.diff(start,"days");
-        return <Badge value={diff +" Days"} severity="success" className="mr-2"></Badge>
-    }
-
-    const addcontract = (rowdata) => {
-
+        const diff = end.diff(start, "days");
+        return <Badge value={diff + " Days"} severity="success" className="mr-2"></Badge>;
     };
 
-    const setDisabled = (rowdata) => {
+    const addcontract = (rowdata) => {};
 
+    const setDisabled = (rowdata) => {};
+
+    const setUserData = (e) => {
+        setUser({ ...user, [e.target.name]: e.target.value });
     };
-
-    const setUserData = (e)=>{
-        setUser({...user,[e.target.name]:e.target.value});
-    }
 
     const actionBodyTemplate = (rowData) => {
         return (
@@ -84,22 +81,24 @@ function Transactions() {
         setTransactionDialog(false);
     };
 
-    const saveProduct = () => {
-        addUser(user.name,user.email,user.password,user.company,user.start, user.end);
+    const saveProduct = async () => {
+        setdataSending(true);
+        await addUser(user.name, user.email, user.password, user.company, user.start, user.end);
         toast.current.show({ severity: "success", summary: "Success", detail: "User Added Successfully", life: 3000 });
+        setdataSending(false);
         setTransactionDialog(false);
-        setUser({_id: "",name: "",email: "",password: "",company: "",start:"",end:""});
+        setUser({ _id: "", name: "", email: "", password: "", company: "", start: "", end: "" });
     };
 
     const productDialogFooter = (
         <React.Fragment>
             <Button label="Cancel" icon="pi pi-times" className="p-button-text" onClick={hideDialog} />
-            <Button label="Register" icon="pi pi-check" className="p-button-text" onClick={saveProduct} />
+            <Button label="Register" icon={dataSending ? "pi pi-spin pi-spinner" : "pi pi-check"} className="p-button-text" onClick={saveProduct} disabled={dataSending} />
         </React.Fragment>
     );
 
     const openNew = () => {
-        setUser({_id: "",name: "",email: "",password: "",company: "",start:"",end:""});
+        setUser({ _id: "", name: "", email: "", password: "", company: "", start: "", end: "" });
         setTransactionDialog(true);
     };
 
@@ -117,28 +116,14 @@ function Transactions() {
                 <div className="datatable-filter-demo col-12">
                     <div className="card p-fluid">
                         <Toolbar className="mb-4" left={leftToolbarTemplate}></Toolbar>
-                        <DataTable
-                            ref={dt}
-                            value={allUsers}
-                            paginator
-                            className="p-datatable-customers"
-                            showGridlines
-                            rows={10}
-                            dataKey="user._id"
-                            filters={filters1}
-                            filterDisplay="menu"
-                            loading={loading1}
-                            responsiveLayout="scroll"
-                            emptyMessage="No Users"
-                            size="small"
-                        >
+                        <DataTable ref={dt} value={allUsers} paginator className="p-datatable-customers" showGridlines rows={10} dataKey="user._id" filters={filters1} filterDisplay="menu" loading={loading1} responsiveLayout="scroll" emptyMessage="No Users" size="small">
                             <Column field="user.name" header="َName" filter filterPlaceholder="Name..." />
                             <Column field="user.email" header="Email" filter filterPlaceholder="Search..." />
-                            <Column field="user.date" header="Reg Date" body={formateDate}  />
+                            <Column field="user.date" header="Reg Date" body={formateDate} />
                             <Column field="user.company" header="Company" filter filterPlaceholder="Search..." />
-                            <Column field="start" header="Contract Start" body={formateStartDate}  />
-                            <Column field="end" header="Contract End" body={formateEndDate}  />
-                            <Column header="Remind Contract" body={formateDiffDate}  />
+                            <Column field="start" header="Contract Start" body={formateStartDate} />
+                            <Column field="end" header="Contract End" body={formateEndDate} />
+                            <Column header="Remind Contract" body={formateDiffDate} />
                             <Column header="Actions" body={actionBodyTemplate} exportable={false}></Column>
                         </DataTable>
                     </div>
@@ -148,7 +133,7 @@ function Transactions() {
                         <div className="p-fluid grid">
                             <div className="field col-12  ">
                                 <span className="p-float-label">
-                                    <InputText value={user.name} onChange={setUserData}name="name" id="name" required />
+                                    <InputText value={user.name} onChange={setUserData} name="name" id="name" required />
                                     <label htmlFor="name">Name</label>
                                 </span>
                             </div>
@@ -159,7 +144,7 @@ function Transactions() {
                                     <label htmlFor="email">Email</label>
                                 </span>
                             </div>
-                            
+
                             <div className="field col-12">
                                 <span className="p-float-label">
                                     <InputText type="password" value={user.password} onChange={setUserData} name="password" id="password" />

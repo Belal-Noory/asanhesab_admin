@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import classNames from "classnames";
-import { Route, useLocation, useHistory } from "react-router-dom";
+import { Route, useLocation } from "react-router-dom";
 import { CSSTransition } from "react-transition-group";
 
 import { AppTopbar } from "./AppTopbar";
@@ -35,7 +35,6 @@ const App = () => {
     const [mobileTopbarMenuActive, setMobileTopbarMenuActive] = useState(false);
     const copyTooltipRef = useRef();
     const location = useLocation();
-    const history = useHistory();
     PrimeReact.ripple = true;
 
     let menuClick = false;

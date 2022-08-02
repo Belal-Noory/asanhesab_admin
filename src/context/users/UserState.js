@@ -37,7 +37,7 @@ const UserState = (props) => {
     };
 
     // Add contract
-    const addContract = async (user,start,end) => {
+    const addContract = async (user, start, end) => {
         // call API to add the customer to the database
         await fetch(`${host}/contract/add`, {
             method: "POST",
@@ -50,7 +50,7 @@ const UserState = (props) => {
                 end: end,
             }),
         });
-        getusers();   
+        getusers();
     };
 
     // Disable Customer
@@ -76,8 +76,8 @@ const UserState = (props) => {
         });
     };
 
-        // Add User
-    const addUser = async (name,email,password,company,start,end) => {
+    // Add User
+    const addUser = async (name, email, password, company, start, end) => {
         // call API to add the customer to the database
         await fetch(`${host}/add`, {
             method: "POST",
@@ -90,10 +90,10 @@ const UserState = (props) => {
                 password: password,
                 company: company,
                 start: start,
-                end:end
+                end: end,
             }),
         });
-        getusers();   
+        getusers();
     };
 
     return (
@@ -106,7 +106,7 @@ const UserState = (props) => {
                 getusers,
                 allUsers,
                 dUsers,
-                addUser
+                addUser,
             }}
         >
             {props.children}
