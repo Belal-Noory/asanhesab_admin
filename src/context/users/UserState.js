@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import userContext from "./userContext";
 const UserState = (props) => {
     // host/backend server url
-    const host = "http://localhost:5050/superadmin/auth";
+    const host = "https://asan-hesab.herokuapp.com/superadmin/auth";
     const userState = [];
     const [allUsers, setaallUsers] = useState(userState);
     const [dUsers, setadUsers] = useState(userState);
