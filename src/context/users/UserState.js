@@ -3,6 +3,8 @@ import userContext from "./userContext";
 const UserState = (props) => {
     // host/backend server url
     const host = "https://asan-hesab.herokuapp.com/superadmin/auth";
+    // const host = "http://localhost:5050/superadmin/auth";
+
     const userState = [];
     const [allUsers, setaallUsers] = useState(userState);
     const [dUsers, setadUsers] = useState(userState);
@@ -18,6 +20,7 @@ const UserState = (props) => {
         });
 
         const json = await users.json();
+        console.log(json);
         // update the all customers list
         setaallUsers(json);
     };
@@ -92,8 +95,12 @@ const UserState = (props) => {
                 start: start,
                 end: end,
             }),
+        }).then(function(response) {
+            return response;
+        }).catch(function(error) {
+            return error;
         });
-        getusers();
+        // getusers();
     };
 
     return (

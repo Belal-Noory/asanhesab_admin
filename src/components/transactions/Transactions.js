@@ -83,7 +83,8 @@ function Transactions() {
 
     const saveProduct = async () => {
         setdataSending(true);
-        await addUser(user.name, user.email, user.password, user.company, user.start, user.end);
+        const res = await addUser(user.name, user.email, user.password, user.company, user.start, user.end);
+        console.log(res);
         toast.current.show({ severity: "success", summary: "Success", detail: "User Added Successfully", life: 3000 });
         setdataSending(false);
         setTransactionDialog(false);
